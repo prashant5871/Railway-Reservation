@@ -1,0 +1,19 @@
+/* body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        } */
+
+.navbar-custom {
+    background-color: #007bff;
+
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .navbar-nav .nav-link {
+    color: #ffffff;
+}
+
+.navbar-custom .nav-link:hover {
+    color: #ffffff;
+}
