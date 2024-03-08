@@ -5,6 +5,37 @@
 <link rel="stylesheet" href="{% static 'css/login-register.css' %}">
 {%endblock%}
 {% block content %}
+
+{% if flag %}
+
+<script>
+
+    alert("registred succesfully...")
+
+</script>
+
+{%endif%}
+
+{% if passanger %}
+    <script>
+        alert("login succesfully...");
+        window.location = "{% url 'user_home' %}";
+    </script>
+{% endif %}
+
+{% if invalid_user %}
+    <script>
+        alert("Invalid user...");
+        window.location = "{% url 'login' %}";
+    </script>
+{% endif %}
+
+{% if staff %}
+    <script>
+        alert("login succesfully...");
+        window.location = "{% url 'user_home' %}";
+    </script>
+{% endif %}
 <div class="login-signup">
     <div class="container">
         <div class="tab">
@@ -13,13 +44,14 @@
         </div>
 
         <div id="Login" class="tabcontent active">
-            <form>
+            <form method="POST" action="{% url 'login_user' %}">
+                {% csrf_token %}
                 <div class="form-group">
-                    <input type="text" placeholder=" " required>
+                    <input type="text" placeholder=" " name="username" required>
                     <label>Username</label>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder=" " required>
+                    <input type="password" placeholder=" " name="password" required>
                     <label>Password</label>
                 </div>
                 <button type="submit">Login</button>
@@ -27,25 +59,26 @@
         </div>
 
         <div id="Register" class="tabcontent">
-            <form>
+            <form action="{%url 'register_user' %}" method="POST">
+                {% csrf_token %}
                 <div class="form-group">
-                    <input type="text" placeholder=" " required>
+                    <input type="text" placeholder=" " name="firstName" required>
                     <label>First Name</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" placeholder=" " required>
+                    <input type="text" placeholder=" " name="lastName" required>
                     <label>Last Name</label>
                 </div>
                 <div class="form-group">
-                    <input type="text" placeholder=" " required>
+                    <input type="text" placeholder=" " name="userName" required>
                     <label>Username</label>
                 </div>
                 <div class="form-group">
-                    <input type="email" placeholder=" " required>
+                    <input type="email" placeholder=" " name="email" required>
                     <label>Email</label>
                 </div>
                 <div class="form-group">
-                    <input type="password" placeholder=" " required>
+                    <input type="password" placeholder=" " name="password" required>
                     <label>Password</label>
                 </div>
                 <button type="submit">Register</button>
