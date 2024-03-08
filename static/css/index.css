@@ -1,4 +1,3 @@
-/* Ensure images within carousel don't overflow */
 .carousel-inner img {
     max-width: 100%;
     height: auto;
@@ -9,18 +8,16 @@
     margin: auto;
 }
 
-/* Slideshow container */
 .slideshow-container {
     position: relative;
     width: 100%;
     height: 100vh;
-    /* Set the height of the slideshow container */
     overflow: hidden;
 }
 
-/* Slides */
+
 .background-image {
-    /* display: none; */
+
     position: absolute;
     top: 0;
     left: 0;
@@ -29,14 +26,10 @@
     background-size: cover;
     background-position: center;
     animation: fade 12s infinite;
-    /* Change the time for image transition here */
+
 }
 
 
-
-
-
-/* Text in the middle */
 .welcome-text {
     position: absolute;
     top: 50%;
@@ -47,7 +40,6 @@
     font-size: 24px;
 }
 
-/* Overlay */
 .overlay {
     position: absolute;
     top: 0;
@@ -55,5 +47,4 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    /* Adjust the opacity for dimming effect */
 }
