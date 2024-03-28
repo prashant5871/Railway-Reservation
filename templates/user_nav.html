@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway System</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/user_nav.css' %}">
+    {% block design %}
+    {% endblock %}
+</head>
+
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="#">Railway</a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="{% url 'user_home' %}">Home</a></li>
+                <li><a href="{% url 'search_train' %}">Search Train</a></li>
+                <li><a href="#">Booking History</a></li>
+                <li><a href="#">Cancel Ticket</a></li>
+                <li><a href="{% url 'logout_user' %}">Logout</a></li>
+            </ul>
+            <div class="profile">
+                <img src="https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg"
+                    alt="User Profile Photo">
+                <div class="profile-info nav-links">
+                    <a href="{% url 'profile' %}">{{user.username}}</a>
+                    <a href="{% url 'logout_user' %}">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    {% block content %} {% endblock %}
+    {% block javascript %} {% endblock %}
+</body>
+
+</html>

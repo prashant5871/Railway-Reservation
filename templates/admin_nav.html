@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Railway Reservation System - Admin Panel</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/admin_nav.css' %}">
+    {% block design %}
+
+    {% endblock %}
+</head>
+
+<body>
+    <header>
+        <h1>Railway Reservation System</h1>
+        <h2>Admin Panel</h2>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="{% url 'add_train' %}">Add Train</a></li>
+            <li><a href="{% url 'add_station' %}">Add Station</a></li>
+            <li><a href="{% url 'add_route' %}">Add Route</a></li>
+            <li><a href="{% url 'view_station' %}">View Station</a></li>
+            <li><a href="{% url 'view_train' %}">View Train</a></li>
+            <li><a href="{% url 'logout_user' %}">Logout</a></li>
+             <!-- <li><a href="add_route.html">Add Route</a></li>  -->
+        </ul>
+    </nav>
+    <main>
+        <p>Welcome to the admin panel! Use the links above to manage trains, stations, and routes.</p>
+    </main>
+
+    {% block content %}
+
+    {% endblock %}
+
+    {% block javascript %}
+    {% endblock %}
+
+</body>
+
+</html>

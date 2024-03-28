@@ -1,0 +1,43 @@
+{% extends 'admin_nav.html' %}
+{% load static %}
+{% block design %}
+
+<link rel="stylesheet" href="{% static 'css/view_station.css' %}">
+
+{%endblock%}
+{% block content %}
+
+<div style="color:Black;border:1px solid white;border-radius:8px;background-color:white;padding:50px">
+
+    <hr>
+    <h3><strong>All Added Station</strong></h3>
+    <hr>
+
+    <div class="station_container">
+        <table class="noteCard table table-bordered" id="myTable">
+            <thead style="color:white;background-color:#333">
+                <tr>
+                    <th>Sr No</th>
+                    <th>Station Name</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for i in data %}
+
+                <tr>
+
+                    <td>{{forloop.counter}}</td>
+                    <td>{{i.station_name}}</td>
+                    <td>{{i.station_city}}</td>
+
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{%endblock%}

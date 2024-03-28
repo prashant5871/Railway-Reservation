@@ -1,0 +1,47 @@
+input[type="text"],
+    input[type="password"] {
+        border-radius: 8px;
+        width: 100%;
+        height: 36px;
+        padding: 8px;
+        box-sizing: border-box;
+        /* Ensures padding is included in width */
+        border: 1px solid #ccc;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead th {
+        background-color: #333;
+        color: white;
+        padding: 10px;
+        text-align: left;
+    }
+
+    tbody td {
+        padding: 10px;
+    }
+
+    .station_container {
+        margin-top: 20px;
+    }
+
+    .noteCard {
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 20px;
+    }
+
+    .noteCard h3 {
+        color: black;
+    }
+
+    .noteCard hr {
+        border: none;
+        border-top: 1px solid #ccc;
+        margin: 20px 0;
+    }

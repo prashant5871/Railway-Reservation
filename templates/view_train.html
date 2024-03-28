@@ -1,0 +1,68 @@
+{% extends 'admin_nav.html' %}
+
+{% load static %}
+{% block design %}
+<link rel="stylesheet" href="{% static 'css/view_station.css' %}">
+<style>
+    input[type=text][type=password] {
+        border-radius: 8px;
+        width: 600px;
+        height: 16px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="color:Black;border:1px solid white;border-radius:8px;background-color:white;padding:50px">
+
+    <hr>
+    <h3><strong>All Added Train</strong></h3>
+    <hr>
+
+    <div class="container">
+        <table class="noteCard table table-bordered" id="myTable">
+            <thead style="color:white;background-color:#333">
+                <tr>
+                    <th>Sr No</th>
+                    <th>Train Name</th>
+                    <!-- <th>Train No.</th> -->
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Arrival Time</th>
+                    <th>Departure Time</th>
+                    <th>Travel Time</th>
+                    <th>Distance</th>
+                    <!-- <th>Img</th> -->
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for i in data %}
+
+                <tr>
+
+                    <td>{{forloop.counter}}</td>
+                    <td>{{i.trainname}}</td>
+                    <!-- <td>{{i.train_no}}</td> -->
+                    <td>{{i.from_city}}</td>
+                    <td>{{i.to_city}}</td>
+                    <td>{{i.arrivaltime}}</td>
+                    <td>{{i.departuretime}}</td>
+                    <td>{{i.traveltime}}</td>
+                    <td>{{i.distance}}</td>
+                    <!-- <td><img src="{{i.img.url}}" style="width:150px;height:100px"></td> -->
+                    <td style="width:100px"><a href="{% url 'view_train' %}" style="color:red"><u>Edit</u></a> . .
+                        <a href="{% url 'view_train' %}" style="color:red"><u>Delete</u></a>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>`
+
+    </div>
+</div>
+
+{% endblock %}

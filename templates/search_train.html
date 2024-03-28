@@ -1,0 +1,58 @@
+{% extends 'user_nav.html' %}
+
+{% load static %}
+
+{% block design %}
+<link rel="stylesheet" href="{% static 'css/search_train.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="search-container">
+    <form id="search-form" onsubmit="searchTrain(); return false;">
+        <div class="search-box">
+            <h2>Search Trains</h2>
+            <div class="row">
+                <!-- <div class="input-container">
+                    <label for="source">Source:</label>
+                    <input type="text" id="source" placeholder="Enter source">
+                </div> -->
+                <div class="input-container">
+                    <label for="source">Source :</label>
+                    <select name="source" id="source">
+                        <option value="">Select Source</option>
+                        {% for station in stations %}
+                        <option value="{{station.station_name}}">{{station.station_city}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="input-container">
+                    <label for="destination">Destination :</label>
+                    <select name="destination" id="destination">
+                        <option value="">Select Destination</option>
+                        {% for station in stations %}
+                        <option value="{{station.station_name}}">{{station.station_city}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-container date">
+                    <label for="travel-date">Traveling Date:</label>
+                    <input type="date" id="travel-date">
+                </div>
+                <!-- <div class="input-container">
+                    <label for="class">Class:</label>
+                    <select id="class">
+                        <option value="">Select Class (Optional)</option>
+                        <option value="economy">Economy</option>
+                        <option value="business">Business</option>
+                    </select>
+                </div> -->
+            </div>
+            <button type="submit" class="search-button">Search Trains</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

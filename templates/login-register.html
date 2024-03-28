@@ -17,24 +17,24 @@
 {%endif%}
 
 {% if passanger %}
-    <script>
-        alert("login succesfully...");
-        window.location = "{% url 'user_home' %}";
-    </script>
+<script>
+    alert("login succesfully...");
+    window.location = "{% url 'user_home' %}";
+</script>
 {% endif %}
 
 {% if invalid_user %}
-    <script>
-        alert("Invalid user...");
-        window.location = "{% url 'login' %}";
-    </script>
+<script>
+    alert("Invalid user...");
+    window.location = "{% url 'login' %}";
+</script>
 {% endif %}
 
 {% if staff %}
-    <script>
-        alert("login succesfully...");
-        window.location = "{% url 'user_home' %}";
-    </script>
+<script>
+    alert("login succesfully...");
+    window.location = "{% url 'admin_home' %}";
+</script>
 {% endif %}
 <div class="login-signup">
     <div class="container">
@@ -76,6 +76,22 @@
                 <div class="form-group">
                     <input type="email" placeholder=" " name="email" required>
                     <label>Email</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder=" " name="mobile" required>
+                    <label>Mobile no</label>
+                </div>
+                <div class="form-group">
+                    <input type="date" placeholder=" " name="dob" required>
+                    <label>DOB</label>
+                </div>
+                <div class="form-group">
+                    <select name="gender" id="gender" required>
+                        <option value="" selected disabled>Choose Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <input type="password" placeholder=" " name="password" required>
