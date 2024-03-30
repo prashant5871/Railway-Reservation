@@ -1,9 +1,18 @@
+from decimal import Decimal
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from . models import *
-from django.urls import reverse
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from urllib.parse import quote
+
+
 def home(request) : 
     return render(request,'index.html')
 
@@ -42,20 +51,6 @@ def login_user(request):
     if request.method == 'POST' :
         uname = request.POST['username']
         password = request.POST['password']
-        # user = authenticate(username=uname,password=password)
-        # try :
-        #     if user is not None :
-        #         if user.is_staff :
-        #             login(request,user)
-        #             staff = True
-        #         elif user :
-        #             login(request,user)
-        #             passanger = True
-        #     else :
-        #         invalid_user = True
-        # except :
-        #     invalid_user = True
-        # user = None
         try:
             user = authenticate(username=uname,password=password)
             if user is None : 
@@ -120,15 +115,25 @@ def add_train(request):
     if request.method == "POST":
         name = request.POST['trainname']
         train_no= request.POST['train_no']
-        from_city = request.POST['from_city']
-        to_city= request.POST['to_city']
+        from_station = request.POST['from_city']
+        to_station= request.POST['to_city']
+
         departure_time= request.POST['departuretime']
         arival_time = request.POST['arrivaltime']
         travel_time = request.POST['traveltime']
         distance = request.POST['distance']
+        fare = request.POST['fare']
         # i = request.FILES['img']
 
-        Train.objects.create(trainname=name,from_city=from_city,to_city=to_city,departuretime=departure_time,arrivaltime=arival_time,traveltime=travel_time,distance=distance)
+        source_station = Station.objects.get(station_name = from_station)
+        dest_station = Station.objects.get(station_name = to_station)
+
+        
+        new_train = Train.objects.create(trainname=name,from_station=source_station,to_station=dest_station,departuretime=departure_time,arrivaltime=arival_time,traveltime=travel_time,distance=distance,fare = fare)
+
+        Route.objects.create(train=new_train,station=source_station,fare=0,traveltime=0,distance=0)
+
+        Route.objects.create(train=new_train,station=dest_station,fare=fare,traveltime=travel_time,distance=distance)
         valid=True
     v={"valid":valid,"data":data}
     return render(request,'add_train.html',v,)
@@ -166,7 +171,117 @@ def add_route(request) :
     return render(request,"add_route.html",dictionary)
 
 def search_train(request):
-    stations = Station.objects.all();
-    data = {"stations":stations}
+    stations = Station.objects.all()
+    is_searched = False
+    trains = []
+    date = None
+    if request.method == "POST": 
+        source = request.POST['source']
+        destination = request.POST['destination']
+        date = request.POST['date']
+        routes = Route.objects.all()
+        is_searched = True
 
+        for route1 in routes : 
+            for route2 in routes :
+                if route1.station.station_name == source and route2.station.station_name == destination and route1.train.trainname == route2.train.trainname :
+                    train = Train.objects.get(trainname=route1.train.trainname)
+                    train.fare = abs(route1.fare - route2.fare)
+                    train.from_station = route1.station
+                    train.to_station = route2.station
+                    trains.append(train)
+    data = {"stations":stations,"is_searched":is_searched,"trains":trains,"date":date}
     return render(request,"search_train.html",data)
+
+
+def generate_pdf(ticket):
+    buffer = BytesIO()
+
+    # Define custom page size
+    page_width, page_height = 250, 310
+    doc = SimpleDocTemplate(buffer, pagesize=(page_width, page_height))
+
+    # Define data for the ticket
+    data = [
+        ["Ticket Details:", ""],
+        ["Train Name:", ticket.passenger.train.trainname],
+        ["Passenger Name:", ticket.passenger.name],
+        ["Passenger Age:", str(ticket.passenger.age)],
+        ["From:", ticket.from_station],
+        ["To:", ticket.to_station],
+        ["Date:", str(ticket.passenger.date)],
+        ["Fare:", str(ticket.fare)],
+    ]
+
+    # Define table style
+    table_style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+    ])
+
+    # Create table
+    table = Table(data)
+    table.setStyle(table_style)
+
+    # Build PDF
+    elements = []
+    elements.append(table)
+    doc.build(elements)
+
+    buffer.seek(0)
+    return buffer
+
+
+def book_ticket(request,trainname,fare,source,destination,date): 
+    if request.method == "POST" : 
+        train = Train.objects.get(trainname = trainname)
+        name = request.POST['name']
+        age = request.POST['age']
+        # train.fare = 
+        # train,name,age,date
+        fare = Decimal(fare)
+        passenger = Passenger.objects.create(train=train, name=name, age=age, date=date)
+        passenger.user.add(request.user)
+        ticket = Ticket.objects.create(passenger=passenger,from_station=source,to_station=destination,fare=fare)
+        # Generate PDF
+        pdf_buffer = generate_pdf(ticket)
+        
+        # Define suggested filename
+        filename = f"{ticket.passenger.name}_ticket.pdf"  # You can customize the filename here
+        
+        # Return PDF content as response with suggested filename
+        response = HttpResponse(pdf_buffer, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="ticket_{ticket.id}.pdf"'
+        return response
+        
+    return render(request,"book_ticket.html")
+
+
+def booking_history(request) : 
+    tickets = Ticket.objects.filter(passenger__user=request.user)
+    data = {"tickets" : tickets}
+    return render(request,"booking_history.html",data)
+
+def download_ticket(request,id):
+    ticket = Ticket.objects.get(pk=id)
+    pdf_buffer = generate_pdf(ticket)
+        
+    # Define suggested filename
+    filename = f"{ticket.passenger.name}_ticket.pdf"  # You can customize the filename here
+    
+    # Return PDF content as response with suggested filename
+    response = HttpResponse(pdf_buffer, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="ticket_{ticket.id}.pdf"'
+    return response
+
+
+def cancel_ticket(request,id):
+    ticket = Ticket.objects.get(pk=id)
+    ticket.delete()
+    return redirect('booking_history')
+    
+    

@@ -4,19 +4,64 @@
 
 {% block design %}
 <link rel="stylesheet" href="{% static 'css/search_train.css' %}">
+<style>
+    .result_container {
+        width: 80%;
+        margin: 0 auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .btn-book {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .btn-book:hover {
+        background-color: #45a049;
+    }
+
+    .no-trains {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #fbe8e8;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        /* Initially hidden */
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-
+{% if not trains and is_searched %}
+<div class="no-trains" id="no-trains-msg">No trains available at the moment.</div>
+{% endif %}
 <div class="search-container">
-    <form id="search-form" onsubmit="searchTrain(); return false;">
+    <form id="search-form" method="POST">
+        {% csrf_token %}
         <div class="search-box">
             <h2>Search Trains</h2>
             <div class="row">
-                <!-- <div class="input-container">
-                    <label for="source">Source:</label>
-                    <input type="text" id="source" placeholder="Enter source">
-                </div> -->
                 <div class="input-container">
                     <label for="source">Source :</label>
                     <select name="source" id="source">
@@ -39,20 +84,44 @@
             <div class="row">
                 <div class="input-container date">
                     <label for="travel-date">Traveling Date:</label>
-                    <input type="date" id="travel-date">
+                    <input name="date" type="date" id="travel-date">
                 </div>
-                <!-- <div class="input-container">
-                    <label for="class">Class:</label>
-                    <select id="class">
-                        <option value="">Select Class (Optional)</option>
-                        <option value="economy">Economy</option>
-                        <option value="business">Business</option>
-                    </select>
-                </div> -->
             </div>
             <button type="submit" class="search-button">Search Trains</button>
         </div>
     </form>
 </div>
+
+{% if is_searched and trains%}
+<div class="result_container">
+    <h2>Available Trains</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Train Name</th>
+                <th>Arrival Time</th>
+                <th>Departure Time</th>
+                <th>Fare</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for train in trains %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{train.trainname}}</td>
+                <td>{{train.arrivaltime}}</td>
+                <td>{{train.departuretime}}</td>
+                <td>{{train.fare}}</td>
+                <!-- <td><button class='btn-book' onclick='bookTrain("Express Train")'>Book Now</button></td> -->
+                <td><a href="{% url 'book_ticket' train.trainname train.fare train.from_station.station_name train.to_station.station_name date %}" class="btn-book">Book now</a></td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
 
 {% endblock %}

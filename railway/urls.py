@@ -15,5 +15,9 @@ urlpatterns = [
     path('view_train',views.view_train,name="view_train"),
     path('add_route',views.add_route,name="add_route"),
     path('search_train',views.search_train,name="search_train"),
+    path('book_ticket/<str:trainname>/<str:fare>/<str:source>/<str:destination>/<str:date>/', views.book_ticket, name='book_ticket'),
+    path('booking_history',views.booking_history,name="booking_history"),
+    path('download/<int:id>/', views.download_ticket, name='download_ticket'),
+    path('cancel/<int:id>/', views.cancel_ticket, name='cancel_ticket'),
 
 ]

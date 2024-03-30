@@ -16,14 +16,15 @@ class Station(models.Model):
 class Train(models.Model):
     trainname = models.CharField(max_length=30,null=True)
     # train_no = models.IntegerField(null=True)
-    from_city = models.CharField(max_length=30,null=True)
-    to_city = models.CharField(max_length=30,null=True)
+    from_station = models.ForeignKey(Station, on_delete=models.SET_NULL, related_name='from_city', null=True)
+    to_station = models.ForeignKey(Station, on_delete=models.SET_NULL, related_name='to_city', null=True)
     departuretime=models.CharField(max_length=30,null=True)
     arrivaltime=models.CharField(max_length=30,null=True)
     traveltime=models.CharField(max_length=100,null=True)
     distance=models.IntegerField(null=True)
     # img=models.FileField(null=True)
-    stations = models.ManyToManyField(Station,through='Route') 
+    stations = models.ManyToManyField(Station,through='Route')
+    fare = models.DecimalField(max_digits=10, decimal_places = 2) 
 
 class Route(models.Model):
     train = models.ForeignKey(Train,on_delete=models.CASCADE)
@@ -37,14 +38,12 @@ class Passenger(models.Model):
     train = models.ForeignKey(Train,on_delete=models.CASCADE,null=True)
     name = models.CharField(max_length=100,null=True)
     age = models.IntegerField(null=True)
-    gender = models.CharField(max_length=30,null=True)
     date = models.DateField(null=True)
 
 class Ticket(models.Model):
     passenger=models.ForeignKey(Passenger,on_delete=models.CASCADE,null=True)
     from_station=models.CharField(max_length=100,null = True)
     to_station = models.CharField(max_length = 100,null = True)
-    date2=models.DateField(null=True)
     fare=models.IntegerField(null=True)
 
 

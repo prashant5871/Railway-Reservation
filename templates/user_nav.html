@@ -20,9 +20,12 @@
             <ul class="nav-links">
                 <li><a href="{% url 'user_home' %}">Home</a></li>
                 <li><a href="{% url 'search_train' %}">Search Train</a></li>
-                <li><a href="#">Booking History</a></li>
-                <li><a href="#">Cancel Ticket</a></li>
+                <li><a href="{% url 'booking_history' %}">Booking History</a></li>
+                {% if user.is_staff %}
+                <li><a href="{%url 'admin_home' %}">Admin panel</a></li>
+                {% endif %}
                 <li><a href="{% url 'logout_user' %}">Logout</a></li>
+                
             </ul>
             <div class="profile">
                 <img src="https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg"

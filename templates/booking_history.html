@@ -1,0 +1,59 @@
+{% extends 'user_nav.html' %}
+{% load static %}
+{% block design %}
+<link rel="stylesheet" href="{% static 'css/booking_history.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="tickets-container">
+    <h1>Your Booked Tickets</h1>
+    <div class="tickets-wrapper">
+    
+        <div class="message-box" id="noTicketsMessage">
+            No booked tickets to show.
+        </div>
+      
+        {% for ticket in tickets %}
+        <div class="ticket">
+            <div class="ticket-header">
+                <span class="ticket-number">Ticket #{{forloop.counter}}</span>
+            </div>
+            <div class="ticket-details">
+                <p>Passenger Name: {{ticket.passenger.name}}</p>
+                <p>train Name: {{ticket.passenger.train.trainname}}</p>
+                <p>From: {{ticket.from_station}}</p>
+                <p>To: {{ticket.to_station}}</p>
+                <br>
+                <a href="{% url 'download_ticket' ticket.id %}" class="btn-download">Download now</a>
+                <a href="{% url 'cancel_ticket' ticket.id %}" class="btn-cancel" id="cancelBtn">Cancel</a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script>
+    let cancel = document.getElementById("cancelBtn");
+    if (cancel != null) {
+        cancel.addEventListener("click", function (event) {
+            // Prevent the default behavior of the anchor tag
+            event.preventDefault();
+
+            // Get the URL from the href attribute
+            var url = this.getAttribute("href");
+
+            // Confirm cancellation with the user
+            var confirmCancellation = confirm("Are you sure you want to cancel this ticket?");
+
+            // If the user confirms the cancellation, redirect to the cancellation URL
+            if (confirmCancellation) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>
+{%endblock%}

@@ -1,0 +1,112 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+}
+
+.tickets-container {
+    background-color: #fff;
+    max-width: 80%;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.tickets-container h1 {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.tickets-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    /* justify-content: center; */
+
+}
+
+.ticket {
+    background-color: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    width: 32%;
+    /* Adjust width as needed */
+    transition: transform 0.3s ease-in-out;
+}
+
+.ticket:hover {
+    transform: translateY(-3px);
+    /* Slight lift on hover */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.ticket-header {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.ticket-number {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+}
+
+.ticket-details {
+    padding: 15px;
+}
+
+.ticket-details p {
+    margin: 5px 0;
+    color: #333;
+}
+
+.btn-download {
+    padding: 8px 15px;
+    background-color: #2ECC71;
+    /* Green color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-cancel {
+    padding: 8px 15px;
+    background-color: #f85757;
+    /* Green color */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-download:hover {
+    background-color: #27AE60;
+    /* Darker green on hover */
+}
+
+.btn-cancel:hover {
+    background-color: #fd3434;
+    /* Darker green on hover */
+}
+
+a {
+    text-decoration: none;
+}
+
+.message-box {
+    /* display: none; */
+    background-color: #adc4f8;
+    color: #471c72;
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border: 1px solid #c8f5c6;
+    border-radius: 5px;
+    width: 100%;
+}
