@@ -10,7 +10,7 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from urllib.parse import quote
+from datetime import datetime
 
 
 def home(request) : 
@@ -33,11 +33,13 @@ def register_user(request):
         gender = request.POST['gender']
         dob = request.POST['dob']
         register = Register.objects.create(
-            user=request.user,
+            user=user,
             mobile=mobile_no,
             gender=gender,
             dob =dob
         )
+
+        user_profile = UserProfile.objects.create(user=user)
         
         flag = True
     
@@ -82,7 +84,52 @@ def user_home(request) :
     return render(request,'user_home.html')
 
 def profile(request):
-    return render(request,"user_profile.html")
+    user_info, created = Register.objects.get_or_create(user=request.user)
+    user_profile = UserProfile.objects.filter(user=request.user).first()
+    data = {"user_info":user_info,"user_profile":user_profile}
+    return render(request,"user_profile.html",data)
+
+def edit_profile(request):
+    register = Register.objects.get(user=request.user)
+    data = {"register":register}
+    if request.method == "POST" : 
+        first_name=request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        mobile = request.POST['mobile']
+        photo = request.FILES.get('profile_photo')
+        dob = request.POST['dob']
+        gender = request.POST['gender']
+        # Parse the date string into a datetime object
+        dob_date = datetime.strptime(dob, "%B %d, %Y")
+
+        # Format the datetime object into "YYYY-MM-DD" format
+        dob_formatted = dob_date.strftime("%Y-%m-%d")
+        curr_user = request.user
+        curr_user.first_name= first_name
+        curr_user.last_name = last_name
+        curr_user.email = email
+        #update the information of current user
+        curr_user.save()
+
+        register = Register.objects.get(user = request.user)
+        register.mobile = mobile
+        register.dob = dob_date
+        register.gender = gender
+        register.save()
+        #set the photo of user
+        testing, created = UserProfile.objects.get_or_create(user=request.user)
+        user_profile = request.user.userprofile
+        if photo :
+            if user_profile.profile_photo:
+                # Delete the old profile photo
+                user_profile.profile_photo.delete()
+            user_profile.profile_photo = photo
+        user_profile.save()
+        # user_profile = UserProfile.objects.get(user=request.user)
+        return redirect('profile')
+    
+    return render(request,"edit_profile.html",data)
 
 def admin_home(request):
     return render(request,"admin_home.html")

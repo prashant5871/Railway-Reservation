@@ -9,6 +9,10 @@ class Register(models.Model):
     dob = models.DateField(null=True)
     gender = models.CharField(max_length=10,null=True)
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    profile_photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
+    
 class Station(models.Model):
     station_name = models.CharField(max_length=100,null = True)
     station_city = models.CharField(max_length = 100,null = True)

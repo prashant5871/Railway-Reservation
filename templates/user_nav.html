@@ -25,11 +25,15 @@
                 <li><a href="{%url 'admin_home' %}">Admin panel</a></li>
                 {% endif %}
                 <li><a href="{% url 'logout_user' %}">Logout</a></li>
-                
+
             </ul>
             <div class="profile">
+                {% if request.user.userprofile.profile_photo %}
+                <img src="{{ request.user.userprofile.profile_photo.url }}" alt="Profile Photo">
+                {% else %}
                 <img src="https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg"
-                    alt="User Profile Photo">
+                    alt="User Profile Picture">
+                {% endif %}
                 <div class="profile-info nav-links">
                     <a href="{% url 'profile' %}">{{user.username}}</a>
                     <a href="{% url 'logout_user' %}">Logout</a>
@@ -37,7 +41,7 @@
             </div>
         </nav>
     </header>
-    
+
     {% block content %} {% endblock %}
     {% block javascript %} {% endblock %}
 </body>

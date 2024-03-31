@@ -1,0 +1,41 @@
+{% extends 'user_nav.html' %}
+
+{% load static %}
+{% block design %}
+<link rel="stylesheet" href="{% static 'css/edit_profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="editable-container" id="editableContainer">
+    <h2>Edit User Information</h2>
+    <form id="editForm" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="name">First Name:</label>
+        <input type="text" name="first_name" value="{{user.first_name}}">
+        <label for="name">Last Name:</label>
+        <input type="text" name="last_name" value="{{user.last_name}}">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" value="{{user.email}}">
+        <label for="dob">DoB:</label>
+        <input type="text" id="dob" name="dob" value="{{register.dob}}">
+        <label for="mobile">Mobile No:</label>
+        <input type="text" id="mobile" name="mobile" value="{{register.mobile}}">
+        <select name="gender" id="gender">
+            <option value="" disabled selected>Select gender</option>
+            <option value="male">male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+        <label for="profilePhoto">Profile Photo:</label>
+        <br>
+        <div class="file-input-container">
+            <input type="file" id="profilePhoto" name="profile_photo" accept="image/*" hidden>
+            <label for="profilePhoto" class="file-input-label">Choose file</label>
+            <span id="fileName" class="file-name">No file chosen</span>
+        </div>
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+{% endblock %}
