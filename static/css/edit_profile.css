@@ -59,6 +59,12 @@ button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
+.file-name {
+    margin-left: 10px;
+    font-style: italic;
+    color: #666;
+}
+
 #profilePhoto {
     position: absolute;
     top: 0;
@@ -67,12 +73,6 @@ button[type="submit"]:hover {
     height: 100%;
     opacity: 0;
     cursor: pointer;
-}
-
-.file-name {
-    margin-left: 10px;
-    font-style: italic;
-    color: #666;
 }
 .image-container{
     width: 100%;

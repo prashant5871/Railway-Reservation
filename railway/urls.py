@@ -23,6 +23,8 @@ urlpatterns = [
     path('download/<int:id>/', views.download_ticket, name='download_ticket'),
     path('cancel/<int:id>/', views.cancel_ticket, name='cancel_ticket'),
     path('edit_profile',views.edit_profile,name='edit_profile'),
+    path('remove_train/<str:trainname>',views.remove_train,name="remove_train"),
+    path('update_train/<str:trainname>',views.update_train,name="update_train"),
 
 ]
 

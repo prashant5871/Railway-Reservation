@@ -29,6 +29,8 @@ class Train(models.Model):
     # img=models.FileField(null=True)
     stations = models.ManyToManyField(Station,through='Route')
     fare = models.DecimalField(max_digits=10, decimal_places = 2) 
+    train_image = models.ImageField(upload_to='train_images/', null=True, blank=True)
+
 
 class Route(models.Model):
     train = models.ForeignKey(Train,on_delete=models.CASCADE)

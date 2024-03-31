@@ -170,13 +170,14 @@ def add_train(request):
         travel_time = request.POST['traveltime']
         distance = request.POST['distance']
         fare = request.POST['fare']
+        train_image = request.FILES.get('train_photo')
         # i = request.FILES['img']
 
         source_station = Station.objects.get(station_name = from_station)
         dest_station = Station.objects.get(station_name = to_station)
 
         
-        new_train = Train.objects.create(trainname=name,from_station=source_station,to_station=dest_station,departuretime=departure_time,arrivaltime=arival_time,traveltime=travel_time,distance=distance,fare = fare)
+        new_train = Train.objects.create(trainname=name,from_station=source_station,to_station=dest_station,departuretime=departure_time,arrivaltime=arival_time,traveltime=travel_time,distance=distance,fare = fare,train_image=train_image)
 
         Route.objects.create(train=new_train,station=source_station,fare=0,traveltime=0,distance=0)
 
@@ -184,6 +185,64 @@ def add_train(request):
         valid=True
     v={"valid":valid,"data":data}
     return render(request,'add_train.html',v,)
+
+def remove_train(request,trainname):
+    train = Train.objects.get(trainname = trainname)
+    train.delete()
+    return redirect("view_train")
+
+def update_train(request,trainname):
+    train = Train.objects.get(trainname = trainname)
+    stations = Station.objects.all()
+    valid=False
+    if request.method == "POST":
+        #get old source and destination
+        old_from_station = train.from_station
+        old_to_station = train.to_station
+        old_train = train
+        name = request.POST['trainname']
+        # train_no= request.POST['train_no']
+        from_station = request.POST['from_city']
+        to_station= request.POST['to_city']
+
+        departure_time= request.POST['departuretime']
+        arival_time = request.POST['arrivaltime']
+        travel_time = request.POST['traveltime']
+        distance = request.POST['distance']
+        fare = request.POST['fare']
+        train_image = request.FILES.get('train_photo')
+        # i = request.FILES['img']
+        source_station = Station.objects.get(station_name = from_station)
+        dest_station = Station.objects.get(station_name = to_station)
+        train.trainname = name
+        train.from_station=source_station
+        train.to_station=dest_station
+        train.arrivaltime=arival_time
+        train.departuretime=departure_time
+        train.traveltime=travel_time
+        train.fare=fare
+        if train_image is not None :
+            train.train_image = train_image
+        train.distance = distance
+        train.save()
+        #get old source and destination
+        # old_source=Station.objects.get(station_name=old_from_station)
+        # old_dest=Station.objects.get(station_name=old_to_station)
+
+        route1 = Route.objects.get(train=old_train,station = old_from_station)
+        route2=Route.objects.get(train=old_train,station=old_to_station)
+
+        route1.delete()
+        route2.delete()
+        
+        # new_train = Train.objects.create(trainname=name,from_station=source_station,to_station=dest_station,departuretime=departure_time,arrivaltime=arival_time,traveltime=travel_time,distance=distance,fare = fare,train_image=train_image)
+
+        Route.objects.create(train=train,station=source_station,fare=0,traveltime=0,distance=0)
+
+        Route.objects.create(train=train,station=dest_station,fare=fare,traveltime=travel_time,distance=distance)
+        valid = True
+    data = {"train":train,"stations":stations,"valid":valid}
+    return render(request,"update_train.html",data)
 
 def view_train(request):
     if not request.user.is_authenticated:
