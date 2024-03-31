@@ -9,11 +9,11 @@
 <div class="tickets-container">
     <h1>Your Booked Tickets</h1>
     <div class="tickets-wrapper">
-    
+        {% if not tickets %}
         <div class="message-box" id="noTicketsMessage">
             No booked tickets to show.
         </div>
-      
+        {% endif %}
         {% for ticket in tickets %}
         <div class="ticket">
             <div class="ticket-header">

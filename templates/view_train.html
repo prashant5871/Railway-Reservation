@@ -24,6 +24,7 @@
             <thead style="color:white;background-color:#333">
                 <tr>
                     <th>Sr No</th>
+                    <th>Photo</th>
                     <th>Train Name</th>
                     <!-- <th>Train No.</th> -->
                     <th>From</th>
@@ -43,6 +44,9 @@
                 <tr>
 
                     <td>{{forloop.counter}}</td>
+                    <td>
+                        <img style="width:100px;" src="/media/{{i.train_image}}" alt="train {{i.train_image}}">
+                    </td>
                     <td>{{i.trainname}}</td>
                     <!-- <td>{{i.train_no}}</td> -->
                     <td>{{i.from_station.station_name}}</td>
@@ -52,8 +56,9 @@
                     <td>{{i.traveltime}}</td>
                     <td>{{i.distance}}</td>
                     <!-- <td><img src="{{i.img.url}}" style="width:150px;height:100px"></td> -->
-                    <td style="width:100px"><a href="{% url 'view_train' %}" style="color:red"><u>Edit</u></a> . .
-                        <a href="{% url 'view_train' %}" style="color:red"><u>Delete</u></a>
+                    <td style="width:100px"><a id="update" href="{% url 'update_train' i.trainname %}"
+                            style="color:rgb(5, 139, 45)"><u>Edit</u></a> . .
+                        <a id="remove" href="{% url 'remove_train' i.trainname %}" style="color:red"><u>Delete</u></a>
                     </td>
 
                 </tr>
@@ -64,5 +69,30 @@
 
     </div>
 </div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+    let remove = document.getElementById("remove");
+    if (remove != null) {
+        remove.addEventListener("click", function (event) {
+            // Prevent the default behavior of the anchor tag
+            event.preventDefault();
+
+            // Get the URL from the href attribute
+            var url = this.getAttribute("href");
+
+            // Confirm removelation with the user
+            var confirmremovelation = confirm("Are you sure you want to remove this Train?");
+
+            // If the user confirms the removelation, redirect to the removelation URL
+            if (confirmremovelation) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>
 
 {% endblock %}

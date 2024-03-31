@@ -37,7 +37,7 @@
 
 {% if valid %}
 <script>
-    alert("New train added successfully")
+    alert("train updated successfully")
     window.location = `{% url 'view_train' %}`
 </script>
 {% endif %}
@@ -48,47 +48,52 @@
         <legend>Train Details</legend>
         <div class="form-group">
             <label for="trainname">Train Name:</label>
-            <input type="text" id="trainname" name="trainname" required>
+            <input type="text" id="trainname" name="trainname" value="{{train.trainname}}" required>
         </div>
         <div class="form-group">
-            <label for="train_no">Train Number:</label>
-            <input type="text" id="train_no" name="train_no" required>
-        </div>
-        <div class="form-group">
-            <label for="from_city">From Station:</label>
+            <label for="from_city">From City:</label>
             <select id="from_city" name="from_city" required>
-                {% for station in data %}
-                <option value="{{station.station_name}}">{{station.station_name}}</option>
+                {% for station in stations %}
+                {% if station.station_name == train.from_station.station_name %}
+                <option value="{{ station.station_name }}" selected>{{ station.station_city }}</option>
+                {% else %}
+                <option value="{{ station.station_name }}">{{ station.station_city }}</option>
+                {% endif %}
                 {% endfor %}
             </select>
         </div>
         <div class="form-group">
-            <label for="to_city">To Station:</label>
+            <label for="to_city">To City:</label>
             <select id="to_city" name="to_city" required>
-                {% for station in data %}
-                <option value="{{station.station_name}}">{{station.station_name}}</option>
+                {% for station in stations %}
+                {% if station.station_name == train.to_station.station_name %}
+                <option value="{{ station.station_name }}" selected>{{ station.station_city }}</option>
+                {% else %}
+                <option value="{{ station.station_name }}">{{ station.station_city }}</option>
+                {% endif %}
                 {% endfor %}
             </select>
         </div>
         <div class="form-group">
             <label for="arrivaltime">Arrival Time:</label>
-            <input type="time" id="arrivaltime" name="arrivaltime" required>
+            <input type="time" id="arrivaltime" name="arrivaltime" value="{{ train.arrivaltime|default_if_none:'' }}"
+                required>
         </div>
         <div class="form-group">
             <label for="departuretime">Departure Time:</label>
-            <input type="time" id="departuretime" name="departuretime" required>
+            <input type="time" id="departuretime" name="departuretime" value="{{ train.departuretime|default_if_none:'' }}" required>
         </div>
         <div class="form-group">
             <label for="traveltime">Travel Time (hours):</label>
-            <input type="number" id="traveltime" name="traveltime" min="0" required>
+            <input type="number" id="traveltime" name="traveltime" min="0" value="{{train.traveltime}}" required>
         </div>
         <div class="form-group">
             <label for="distance">Distance (km):</label>
-            <input type="number" id="distance" name="distance" min="0" required>
+            <input type="number" id="distance" name="distance" min="0" value="{{train.distance}}" required>
         </div>
         <div class="form-group">
             <label for="fare">Fare :</label>
-            <input type="number" id="fare" name="fare" min="0" required>
+            <input type="number" id="fare" name="fare" min="0" value="{{train.fare}}" required>
         </div>
         <!-- <div class="form-group">
             <label for="img">Train Image:</label>
@@ -102,7 +107,7 @@
             <span id="fileName" class="file-name">No file chosen</span>
         </div>
         <div class="form-group">
-            <button type="submit">Add Train</button>
+            <button type="submit">update Train</button>
         </div>
     </fieldset>
 </form>

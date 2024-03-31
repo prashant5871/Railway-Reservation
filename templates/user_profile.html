@@ -9,52 +9,31 @@
 <div class="profile-container">
     <div class="read-only-container" id="readOnlyContainer">
         <h2 style="text-align: center;">User Information</h2>
-        
 
-            <div class="image-container">
-                <!-- <a href="{%url 'profile' %}"></a> -->
-                <img src="https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg"
-                    alt="User Profile Picture" class="profile-photo">
-                <!-- </a> -->
-            </div>
-        <ul>
-            <li><span>Name:</span>{{user.first_name}} {{user.last_name}}</li>
-            <li><span>Email:</span> {{user.email}}</li>
-            <li><span>Username:</span> {{user.username}}</li>
-            <li><span>Gender:</span> Male</li>
-            <li><span>DoB:</span> 1990-01-01</li>
-            <li><span>Mobile No:</span> +123 456 7890</li>
+
+        <div class="image-container">
+
+            {% if request.user.userprofile.profile_photo %}
+            <img src="{{ request.user.userprofile.profile_photo.url }}" alt="Profile Photo" class="profile-photo">
+            {% else %}
+            <img src="https://static.vecteezy.com/system/resources/thumbnails/009/734/564/small_2x/default-avatar-profile-icon-of-social-media-user-vector.jpg"
+                alt="User Profile Picture" class="profile-photo">
+            {% endif %}
+        </div>
+        <ul class="u-list">
+            <!-- <li><span>Name:</span>{{user.first_name}} {{user.last_name}}</li> -->
+            <li class="list"><span>First Name : </span>{{user.first_name}}</li>
+            <li class="list"><span>Last Name :</span> {{user.last_name}} </li>
+            <li class="list"><span>Email:</span> {{user.email}}</li>
+            <li class="list"><span>Username:</span> {{user.username}}</li>
+            <li class="list"><span>Gender:</span> {{user_info.gender}}</li>
+            <li class="list"><span>DoB:</span> {{user_info.dob}} </li>
+            <li class="list"><span>Mobile No:</span> {{user_info.mobile}} </li>
         </ul>
-        <button class="edit-button" id="editButton">Edit</button>
+        <br>
+        <!-- <a class="edit-button" href="#">Edit</a>
+         -->
+        <a href="{% url 'edit_profile' %}" class="edit-button" style="text-decoration:none;">Edit</a>
     </div>
 
-    <div class="editable-container" id="editableContainer">
-        <h2>Edit User Information</h2>
-        <form id="editForm">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" value="John Doe">
-            <label for="email">Email:</label>
-            <input type="text" id="email" name="email" value="johndoe@example.com">
-            <label for="dob">DoB:</label>
-            <input type="text" id="dob" name="dob" value="1990-01-01">
-            <label for="mobile">Mobile No:</label>
-            <input type="text" id="mobile" name="mobile" value="+123 456 7890">
-            <label for="profilePhoto">Profile Photo:</label>
-            <br>
-            <div class="file-input-container">
-                <input type="file" id="profilePhoto" name="profilePhoto" accept="image/*" hidden>
-                <label for="profilePhoto" class="file-input-label">Choose file</label>
-                <span id="fileName" class="file-name">No file chosen</span>
-            </div>
-            <button type="submit">Save</button>
-        </form>
-    </div>
-</div>
-
-{% endblock %}
-
-{% block javascript %}
-
-<script src="{% static 'js/user_profile.js' %}"></script>
-
-{% endblock %}
+    {% endblock %}

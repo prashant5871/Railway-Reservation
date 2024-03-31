@@ -1,5 +1,8 @@
 from django.urls import path,include
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('',views.home,name="home"),
     path('login',views.login_first,name="login"),
@@ -19,5 +22,12 @@ urlpatterns = [
     path('booking_history',views.booking_history,name="booking_history"),
     path('download/<int:id>/', views.download_ticket, name='download_ticket'),
     path('cancel/<int:id>/', views.cancel_ticket, name='cancel_ticket'),
+    path('edit_profile',views.edit_profile,name='edit_profile'),
+    path('remove_train/<str:trainname>',views.remove_train,name="remove_train"),
+    path('update_train/<str:trainname>',views.update_train,name="update_train"),
 
 ]
+
+# Serve media files during development
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

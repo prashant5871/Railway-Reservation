@@ -10,7 +10,7 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-from urllib.parse import quote
+from datetime import datetime
 
 
 def home(request) : 
@@ -33,11 +33,13 @@ def register_user(request):
         gender = request.POST['gender']
         dob = request.POST['dob']
         register = Register.objects.create(
-            user=request.user,
+            user=user,
             mobile=mobile_no,
             gender=gender,
             dob =dob
         )
+
+        user_profile = UserProfile.objects.create(user=user)
         
         flag = True
     
@@ -82,7 +84,52 @@ def user_home(request) :
     return render(request,'user_home.html')
 
 def profile(request):
-    return render(request,"user_profile.html")
+    user_info, created = Register.objects.get_or_create(user=request.user)
+    user_profile = UserProfile.objects.filter(user=request.user).first()
+    data = {"user_info":user_info,"user_profile":user_profile}
+    return render(request,"user_profile.html",data)
+
+def edit_profile(request):
+    register = Register.objects.get(user=request.user)
+    data = {"register":register}
+    if request.method == "POST" : 
+        first_name=request.POST['first_name']
+        last_name = request.POST['last_name']
+        email = request.POST['email']
+        mobile = request.POST['mobile']
+        photo = request.FILES.get('profile_photo')
+        dob = request.POST['dob']
+        gender = request.POST['gender']
+        # Parse the date string into a datetime object
+        dob_date = datetime.strptime(dob, "%B %d, %Y")
+
+        # Format the datetime object into "YYYY-MM-DD" format
+        dob_formatted = dob_date.strftime("%Y-%m-%d")
+        curr_user = request.user
+        curr_user.first_name= first_name
+        curr_user.last_name = last_name
+        curr_user.email = email
+        #update the information of current user
+        curr_user.save()
+
+        register = Register.objects.get(user = request.user)
+        register.mobile = mobile
+        register.dob = dob_date
+        register.gender = gender
+        register.save()
+        #set the photo of user
+        testing, created = UserProfile.objects.get_or_create(user=request.user)
+        user_profile = request.user.userprofile
+        if photo :
+            if user_profile.profile_photo:
+                # Delete the old profile photo
+                user_profile.profile_photo.delete()
+            user_profile.profile_photo = photo
+        user_profile.save()
+        # user_profile = UserProfile.objects.get(user=request.user)
+        return redirect('profile')
+    
+    return render(request,"edit_profile.html",data)
 
 def admin_home(request):
     return render(request,"admin_home.html")
@@ -123,13 +170,14 @@ def add_train(request):
         travel_time = request.POST['traveltime']
         distance = request.POST['distance']
         fare = request.POST['fare']
+        train_image = request.FILES.get('train_photo')
         # i = request.FILES['img']
 
         source_station = Station.objects.get(station_name = from_station)
         dest_station = Station.objects.get(station_name = to_station)
 
         
-        new_train = Train.objects.create(trainname=name,from_station=source_station,to_station=dest_station,departuretime=departure_time,arrivaltime=arival_time,traveltime=travel_time,distance=distance,fare = fare)
+        new_train = Train.objects.create(trainname=name,from_station=source_station,to_station=dest_station,departuretime=departure_time,arrivaltime=arival_time,traveltime=travel_time,distance=distance,fare = fare,train_image=train_image)
 
         Route.objects.create(train=new_train,station=source_station,fare=0,traveltime=0,distance=0)
 
@@ -137,6 +185,64 @@ def add_train(request):
         valid=True
     v={"valid":valid,"data":data}
     return render(request,'add_train.html',v,)
+
+def remove_train(request,trainname):
+    train = Train.objects.get(trainname = trainname)
+    train.delete()
+    return redirect("view_train")
+
+def update_train(request,trainname):
+    train = Train.objects.get(trainname = trainname)
+    stations = Station.objects.all()
+    valid=False
+    if request.method == "POST":
+        #get old source and destination
+        old_from_station = train.from_station
+        old_to_station = train.to_station
+        old_train = train
+        name = request.POST['trainname']
+        # train_no= request.POST['train_no']
+        from_station = request.POST['from_city']
+        to_station= request.POST['to_city']
+
+        departure_time= request.POST['departuretime']
+        arival_time = request.POST['arrivaltime']
+        travel_time = request.POST['traveltime']
+        distance = request.POST['distance']
+        fare = request.POST['fare']
+        train_image = request.FILES.get('train_photo')
+        # i = request.FILES['img']
+        source_station = Station.objects.get(station_name = from_station)
+        dest_station = Station.objects.get(station_name = to_station)
+        train.trainname = name
+        train.from_station=source_station
+        train.to_station=dest_station
+        train.arrivaltime=arival_time
+        train.departuretime=departure_time
+        train.traveltime=travel_time
+        train.fare=fare
+        if train_image is not None :
+            train.train_image = train_image
+        train.distance = distance
+        train.save()
+        #get old source and destination
+        # old_source=Station.objects.get(station_name=old_from_station)
+        # old_dest=Station.objects.get(station_name=old_to_station)
+
+        route1 = Route.objects.get(train=old_train,station = old_from_station)
+        route2=Route.objects.get(train=old_train,station=old_to_station)
+
+        route1.delete()
+        route2.delete()
+        
+        # new_train = Train.objects.create(trainname=name,from_station=source_station,to_station=dest_station,departuretime=departure_time,arrivaltime=arival_time,traveltime=travel_time,distance=distance,fare = fare,train_image=train_image)
+
+        Route.objects.create(train=train,station=source_station,fare=0,traveltime=0,distance=0)
+
+        Route.objects.create(train=train,station=dest_station,fare=fare,traveltime=travel_time,distance=distance)
+        valid = True
+    data = {"train":train,"stations":stations,"valid":valid}
+    return render(request,"update_train.html",data)
 
 def view_train(request):
     if not request.user.is_authenticated:
