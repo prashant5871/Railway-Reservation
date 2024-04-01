@@ -1,7 +1,105 @@
+
 {% extends 'user_nav.html' %}
 
+{% load static %}
+{% block design %}
+<!-- <link rel="stylesheet" href="{% static 'css/index.css' %}"> -->
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f2f2f2;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        text-align: center;
+    }
+
+    h1 {
+        color: #333;
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    p {
+        color: #666;
+        font-size: 18px;
+        margin-bottom: 30px;
+    }
+
+    .button {
+        display: inline-block;
+        padding: 15px 30px;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border: none;
+        border-radius: 8px;
+        font-size: 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+        background-color: #45a049;
+    }
+
+    .features {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 50px;
+    }
+
+    .feature {
+        flex: 1;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+    .feature:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature h2 {
+        color: #333;
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+
+    .feature p {
+        color: #666;
+        font-size: 16px;
+    }
+</style>
+{%endblock%}
 {% block content %}
 
-<h1>hello</h1>
+<div class="container">
+    <h1>Welcome to Railway Reservation System</h1>
+    <p>Book your tickets hassle-free with us!</p>
+    <a href="{% url 'search_train' %}" class="button">Search Now</a>
+
+    <div class="features">
+        <div class="feature">
+            <h2>Easy Booking Process</h2>
+            <p>Book your tickets in just a few clicks.</p>
+        </div>
+        <div class="feature">
+            <h2>Secure Payment</h2>
+            <p>Safe and secure payment options available.</p>
+        </div>
+        <div class="feature">
+            <h2>24/7 Customer Support</h2>
+            <p>Get assistance anytime, anywhere.</p>
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}

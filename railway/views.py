@@ -222,21 +222,17 @@ def update_train(request,trainname):
         train.traveltime=travel_time
         train.fare=fare
         if train_image is not None :
+            if train.train_image :
+                train.train_image.delete()
             train.train_image = train_image
         train.distance = distance
         train.save()
-        #get old source and destination
-        # old_source=Station.objects.get(station_name=old_from_station)
-        # old_dest=Station.objects.get(station_name=old_to_station)
-
+        
         route1 = Route.objects.get(train=old_train,station = old_from_station)
         route2=Route.objects.get(train=old_train,station=old_to_station)
 
         route1.delete()
         route2.delete()
-        
-        # new_train = Train.objects.create(trainname=name,from_station=source_station,to_station=dest_station,departuretime=departure_time,arrivaltime=arival_time,traveltime=travel_time,distance=distance,fare = fare,train_image=train_image)
-
         Route.objects.create(train=train,station=source_station,fare=0,traveltime=0,distance=0)
 
         Route.objects.create(train=train,station=dest_station,fare=fare,traveltime=travel_time,distance=distance)
